@@ -1,15 +1,17 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
-import "./globals.css";
+import "./globals.scss";
+import Header from "./components/header";
+import Footer from "./components/footer";
 
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
+const EurostileEx = localFont({
+  src: "./fonts/EurostileLTStd-Ex2.otf",
+  variable: "--font-eurostile-Ex",
   weight: "100 900",
 });
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
+const Eurostile = localFont({
+  src: "./fonts/EurostileLTStd.otf",
+  variable: "--font-eurostile",
   weight: "100 900",
 });
 
@@ -25,8 +27,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable}`}>
+      <body className={`${EurostileEx.variable} ${Eurostile.variable}`}>
+        <Header />
         {children}
+        <Footer />
       </body>
     </html>
   );
