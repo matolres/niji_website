@@ -1,0 +1,23 @@
+.container_1 {
+    display: flex;
+    gap: 1rem;
+    margin: 4rem 2rem;
+    ul {
+        list-style: none;
+        li {
+            padding: 0.5rem 0;
+        }
+    }
+}
+.container_1 > * {
+    flex: 1;
+    display: flex;
+    align-items: center;
+}
+.container_1_2 {
+    justify-content: center;
+    }
+    .container_1_3 {
+        justify-content: end;
+        align-items: center;
+    }
