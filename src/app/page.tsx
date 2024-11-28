@@ -1,67 +1,103 @@
-import Image from "next/image";
-import styles from "@/app/page.module.scss"
+import { shopifyFetch } from "./lib/shopify";
+import Homepage from "./pages/homepage/homepage";
 
+const query = `
+{
+  collections(first: 10) {
+    edges {
+      node {
+        title
+        products(first: 10) {
+          edges {
+            node {
+              id
+              title
+              handle
+              description
+              media(first: 10) {
+                edges {
+                  node {
+                    ... on MediaImage {
+                      id
+                      image {
+                        src
+                      }
+                    }
+                  }
+                }
+              }
+              variants(first: 10) {
+                nodes {
+                  price {
+                    amount
+                  }
+                  selectedOptions {
+                    name
+                    value
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
 
-export default function Home() {
+`;
+
+export default async function Home() {
+  const response = await shopifyFetch<{
+    collections: {
+      edges: {
+        node: {
+          title: string;
+    products: {
+      edges: {
+        node: {
+          id: string;
+          title: string;
+          handle: string;
+          description: string;
+          media: {
+            edges: {
+              node: {
+                image: {
+                  src: string;
+                };
+              };
+            }[];
+          };
+          variants: {
+            nodes: {
+              price: {
+                amount: string;
+              };
+              selectedOptions: {
+                name: string;
+                value: string;
+              }[];
+            }[];
+          };
+        };
+      }[];
+    };
+        };
+      }[];
+    };
+  }>({ query }); // Use the `query` variable declared above
+
+  if (response.error || !response.data) {
+    console.error('Failed to fetch collections', response.error);
+    return <div>Error loading collections</div>;
+  }
+console.log("data", response.data)
+  const collections = response.data.collections;
+
   return (
-   <main className={styles.main_container}>
-    <div className={styles.header_background}></div>
-    <div className={styles.container_1}>
-      <Image className={styles.Background_image}
-      src="https://cdn.shopify.com/s/files/1/0896/4272/9819/files/landingpage-image.jpg?v=1732368446"
-      fill={true}
-      alt="background image niji t-shirts"
-      />
-    </div>
-    <section className={styles.container_2}>
-      <h1>Signature collection</h1>
-      <div className={styles.container_2_1}>
-        <div className={styles.container_2_1_1}>
-          <div className={styles.image_container}>
-          <Image
-          src="/Mannequin_Image1 2.png"
-          alt=""
-          width={400}
-          height={400}
-          />
-          </div>
-          <div className={styles.product_text}>
-            <p>Signature Star Tee</p>
-            <p>500 DKK</p>
-          </div>
-        </div>
-        <div className={styles.container_2_1_2}>
-          <div className={styles.image_container}>
-          <Image
-          src="/Mannequin_Image1.png"
-          alt=""
-          width={400}
-          height={400}
-          />
-          </div>
-          <div className={styles.product_text}>
-            <p>Signature Star Tee</p>
-            <p>500 DKK</p>
-          </div>
-        </div>
-      </div>
-    </section>
-    <section className={styles.container_3}>
-       <div className={styles.container_3_1}>
-        <div className={styles.container_3_1_1}>
-
-        </div>
-        <div className={styles.container_3_1_2}>
-
-        </div>
-       </div>
-       <div className={styles.container_3_2}>
-
-       </div>
-    </section>
-
-
-   </main>
-
+    <>
+      <Homepage collections={collections} />
+    </>
   );
 }
